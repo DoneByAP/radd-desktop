@@ -112,6 +112,8 @@ Select your engine with **Locate engine…**. The current GUI targets RADD **0.5
 
 The engine scripts use a development-friendly build: link-time optimization is disabled, and the Rapstone decoder library is built at optimization level 0 because optimizing its generated tables is very slow. All architecture features remain enabled; analysis may run slower than a fully optimized upstream build. For a performance-focused build, remove both `--config` overrides from the engine build command and allow substantially more compile time. You can use Locate engine to switch builds.
 
+CI pins Rust 1.94.0 to match the tested Windows build. The engine scripts default `RUST_MIN_STACK` to 64 MiB for the compiler because Rapstone's generated decoder tables can overflow the compiler's default thread stack. An existing `RUST_MIN_STACK` setting is preserved; this is a build-time setting, not a GUI runtime requirement.
+
 ## Tests and platform builds
 
 ```sh

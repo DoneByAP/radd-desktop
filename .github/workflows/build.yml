@@ -14,8 +14,10 @@ jobs:
         os: [windows-latest, ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.94.0
       - name: Linux prerequisites
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y build-essential pkg-config libx11-dev libxi-dev libxcursor-dev libxrandr-dev libxinerama-dev libxkbcommon-dev libwayland-dev libgl1-mesa-dev libegl1-mesa-dev
@@ -37,7 +39,7 @@ jobs:
       - name: Test real engine on Unix
         if: runner.os != 'Windows'
         run: RADD_TEST_ENGINE="$PWD/tools/radd" RADD_TEST_INPUT="$PWD/vendor/radd/test_files_input/hello_x32" cargo test --locked real_engine -- --ignored --nocapture
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: RADD-Desktop-${{ runner.os }}-${{ runner.arch }}
           path: dist/

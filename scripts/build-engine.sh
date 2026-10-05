@@ -15,7 +15,8 @@ if [ "$(git -C "$engine_dir" rev-parse HEAD)" != "$revision" ]; then
     exit 1
 fi
 cp "$project_dir/scripts/engine.Cargo.lock" "$engine_dir/Cargo.lock"
-cargo build --manifest-path "$engine_dir/Cargo.toml" --release --locked --bin radd --config profile.release.lto=false --config profile.release.package.rapstone.opt-level=0
+# Rapstone's generated decoder tables need more than rustc's default thread stack.
+RUST_MIN_STACK="${RUST_MIN_STACK:-67108864}" cargo build --manifest-path "$engine_dir/Cargo.toml" --release --locked --bin radd --config profile.release.lto=false --config profile.release.package.rapstone.opt-level=0
 mkdir -p "$project_dir/tools"
 cp "$engine_dir/target/release/radd" "$project_dir/tools/radd"
 echo "Engine ready: $project_dir/tools/radd"
