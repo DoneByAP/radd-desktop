@@ -1,0 +1,43 @@
+name: Build desktop bundles
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Linux prerequisites
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y build-essential pkg-config libx11-dev libxi-dev libxcursor-dev libxrandr-dev libxinerama-dev libxkbcommon-dev libwayland-dev libgl1-mesa-dev libegl1-mesa-dev
+      - run: cargo test --locked
+      - name: Build Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./scripts/build-windows.ps1
+      - name: Build Linux or macOS
+        if: runner.os != 'Windows'
+        run: bash scripts/build-unix.sh
+      - name: Test real engine on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $env:RADD_TEST_ENGINE = (Resolve-Path tools/radd.exe).Path
+          $env:RADD_TEST_INPUT = (Resolve-Path vendor/radd/test_files_input/hello_x32).Path
+          cargo test --locked real_engine -- --ignored --nocapture
+      - name: Test real engine on Unix
+        if: runner.os != 'Windows'
+        run: RADD_TEST_ENGINE="$PWD/tools/radd" RADD_TEST_INPUT="$PWD/vendor/radd/test_files_input/hello_x32" cargo test --locked real_engine -- --ignored --nocapture
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RADD-Desktop-${{ runner.os }}-${{ runner.arch }}
+          path: dist/
