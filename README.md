@@ -6,7 +6,7 @@ This is an independent GUI, not an official PNNL release. The GUI uses egui/efra
 
 ![RADD Desktop: a guided workflow with a sample file and built-in help](docs/screenshots/welcome.png)
 
-**Platform status:** Windows x86_64 has been built and tested locally. Linux and macOS build scripts and CI are provided, but those platforms are not yet verified. See [the validation record](VALIDATION.md).
+**Platform status:** Windows x86_64, Linux x86_64, and macOS ARM64 passed GitHub builds and real-engine integration tests. The Windows GUI has also been inspected locally; Linux/macOS graphical desktop behavior still needs manual testing. See [the validation record](VALIDATION.md).
 
 ## Relationship to PNNL RADD
 
@@ -131,7 +131,7 @@ cargo test --locked real_engine -- --ignored --nocapture
 
 On Linux/macOS, set the equivalent environment variables with `export`, using `tools/radd` and the same sample path. Sample inputs are only analyzed, never executed.
 
-The included GitHub Actions workflow builds and uploads bundles for Windows, Linux and macOS when you put this project in a repository and run the workflow. It is supplied as configuration; including it here does not mean those remote builds have run.
+The included GitHub Actions workflow builds and uploads bundles for Windows, Linux and macOS. All three platforms passed [this build and integration-test run](https://github.com/DoneByAP/radd-desktop/actions/runs/37271445192). These automated checks exercise the analysis engine; they do not test native file dialogs or the GUI on a graphical desktop.
 
 ## Troubleshooting
 
@@ -150,6 +150,6 @@ The included GitHub Actions workflow builds and uploads bundles for Windows, Lin
 
 `src/main.rs` contains the GUI; `src/runner.rs` builds arguments, validates inputs, runs/cancels the engine and reads bounded previews. The engine is separate so an engine crash is reported without taking down the GUI. No shell is used to pass binary paths or options.
 
-This first version is a workflow GUI and file previewer. It does not yet include interactive control-flow graphs, a debugger, a structured function browser, signed installers, or a custom header editor. Linux/macOS require platform testing; see VALIDATION.md for checks actually performed.
+This first version is a workflow GUI and file previewer. It does not yet include interactive control-flow graphs, a debugger, a structured function browser, signed installers, or a custom header editor. Linux/macOS still require manual graphical testing; see VALIDATION.md for checks actually performed.
 
 GUI source is MIT licensed. RADD, Rapstone, RHP and GUI dependencies retain their respective licenses; notices are in `licenses/`.

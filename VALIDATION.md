@@ -1,5 +1,13 @@
 # Validation record
 
+## GitHub build verification: October 5, 2026 (UTC)
+
+[Run 37271445192](https://github.com/DoneByAP/radd-desktop/actions/runs/37271445192) passed for source commit `51549f62a0d97d87f22bc4634e7af5a6358d2ab8` on Windows x86_64, Ubuntu x86_64, and macOS ARM64. Each job passed the three unit tests, built the engine and release GUI, passed the real-engine integration test, and uploaded its bundle.
+
+The first CI run failed while Rust 1.99 compiled Rapstone's generated decoder tables (compiler stack overflow on Windows/Linux and a recursive compiler backtrace ending in SIGBUS on macOS). The build scripts now provide a 64 MiB compiler thread stack unless the caller supplies a value. CI uses Rust 1.94.0, matching the local working build. Checkout and artifact upload actions were updated to v7 to remove the Node.js 20 deprecation warning.
+
+This verifies compilation and the engine workflow on all three systems. Native Linux/macOS GUI interaction, file dialogs, signing, and clean-machine installation remain unverified. The sections below retain the earlier local validation record; the CI results above supersede its statement that Linux/macOS compilation had not run.
+
 ## Version 0.2: beginner interface redesign
 
 The interface now has a light canvas, contrasting navigation sidebar, numbered workflow, built-in sample button, separate review screen, beginner explanations, collapsed technical settings, and a results-reading guide. A failed run retains its failure state even when users navigate to another screen.
